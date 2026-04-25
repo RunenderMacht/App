@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Codex der Macht</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --gold: #dfb750;
+            --gold-light: #fdf0a6;
+            --gold-dark: #8c7322;
+        }
+
+        /* Statischer, tiefer Blau-Rot Gradient */
+        body {
+            background: linear-gradient(135deg, #050a14 0%, #2a050d 100%);
+            color: #e2e8f0;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .font-magic {
+            font-family: 'Cinzel', serif;
+        }
+
+        .font-lore {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Header Glassmorphism */
+        .header-glass {
+            background: rgba(5, 5, 10, 0.4);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(223, 183, 80, 0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Dashboard Panel */
+        .dashboard-panel {
+            background: linear-gradient(145deg, rgba(20, 20, 30, 0.6), rgba(5, 5, 10, 0.8));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(223, 183, 80, 0.1);
+        }
+
+        /* Scroll-Maske für sanftes Ausblenden */
+        .scroll-mask {
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+        }
+
+        /* 3D Mana Edelsteine - Jetzt mit den echten Bildern! */
+        .mana-gem {
+            position: relative;
+            border-radius: 50%;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.8);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .mana-gem img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+        }
+
+        /* Animation für nicht-aktive Filter */
+        .filter-btn {
+            opacity: 0.6;
+            transform: scale(0.9);
+            filter: grayscale(30%);
+        }
+
+        .filter-btn:hover {
+            opacity: 0.8;
+            transform: scale(0.95);
+            filter: grayscale(0%);
+        }
+
+        /* Animation für aktiven Filter */
+        .filter-active {
+            opacity: 1 !important;
+            transform: scale(1.15) translateY(-2px) !important;
+            box-shadow: 0 0 25px rgba(223, 183, 80, 0.4), 0 5px 15px rgba(0, 0, 0, 0.9);
+            border-color: var(--gold-light) !important;
+            filter: grayscale(0%) !important;
+            animation: pulseGlow 3s infinite alternate;
+            z-index: 10;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(223, 183, 80, 0.3), 0 8px 15px rgba(0, 0, 0, 0.9);
+            }
+
+            100% {
+                box-shadow: 0 0 40px rgba(223, 183, 80, 0.6), 0 8px 15px rgba(0, 0, 0, 0.9);
+            }
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Butterweiche Karten-Animationen */
+        .card-entry {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            animation: cardEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes cardEnter {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 3D Parallax & Hover Container */
+        .card-container {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.9);
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
+            will-change: transform;
+        }
+
+        .card-container.reset-transition {
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease-out;
+        }
+
+        .card-container:hover {
+            border-color: rgba(223, 183, 80, 0.5);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(223, 183, 80, 0.15);
+        }
+
+        /* Modal Animationen */
+        .modal-blur {
+            animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .modal-exit {
+            animation: modalFadeOut 0.3s ease-in forwards;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                background-color: rgba(0, 0, 0, 0);
+                backdrop-filter: blur(0px);
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                background-color: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(16px);
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes modalFadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        /* Edle Obsidian Werte-Boxen */
+        .stat-box {
+            background: linear-gradient(135deg, rgba(20, 20, 25, 0.9), rgba(5, 5, 10, 0.98));
+            border: 1px solid rgba(223, 183, 80, 0.2);
+            box-shadow: inset 0 2px 15px rgba(0, 0, 0, 0.9), 0 5px 20px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(223, 183, 80, 0.5), transparent);
+        }
+
+        /* Custom Dropdown Liste */
+        .custom-dropdown-list {
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold) rgba(0, 0, 0, 0.5);
+        }
+
+        .custom-dropdown-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-dropdown-list::-webkit-scrollbar-thumb {
+            background-color: var(--gold);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen pb-32" onclick="closeAllDropdowns()">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 header-glass py-4 px-4 flex flex-col items-center">
+        <img src="RDM logo.jpeg" alt="Logo" class="h-14 object-contain drop-shadow-[0_0_20px_rgba(223,183,80,0.5)] mb-2"
+            onerror="handleImageError(this, 'RDM logo.jpeg')">
+        <div class="flex items-center gap-4">
+            <div class="h-[1px] w-12 bg-gradient-to-r from-transparent to-[var(--gold)]"></div>
+            <h1
+                class="font-magic text-transparent bg-clip-text bg-gradient-to-r from-[var(--gold-light)] via-[var(--gold)] to-[var(--gold-dark)] text-[12px] tracking-[0.4em] text-center uppercase font-bold drop-shadow-sm">
+                Karten-Archiv</h1>
+            <div class="h-[1px] w-12 bg-gradient-to-l from-transparent to-[var(--gold)]"></div>
+        </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="max-w-xl mx-auto relative pt-6 space-y-8 px-4">
+
+        <!-- Dashboard Panel (Fasst Suche, Mana und Filter zusammen) -->
+        <div class="dashboard-panel rounded-[2rem] p-5 space-y-6">
+
+            <!-- Suchleiste -->
+            <div class="px-2">
+                <div class="relative group">
+                    <input type="text" id="searchInput" placeholder="Suche im Codex..." oninput="applyFilters()"
+                        class="w-full bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl py-4 pl-14 pr-4 text-sm focus:ring-1 focus:ring-[var(--gold)] focus:border-[var(--gold)] focus:shadow-[0_0_20px_rgba(223,183,80,0.2)] outline-none transition-all placeholder:text-slate-500 shadow-[inset_0_4px_15px_rgba(0,0,0,0.8)] font-magic tracking-wider text-[var(--gold-light)]">
+                    <span
+                        class="absolute left-5 top-1/2 -translate-y-1/2 opacity-60 text-[var(--gold)] text-lg transition-opacity group-focus-within:opacity-100">🔍</span>
+                </div>
+            </div>
+
+            <!-- Animierte Mana Farben (Zentriert und vergrößert) -->
+            <div class="space-y-3 relative">
+                <p class="font-magic text-[10px] uppercase tracking-[0.3em] text-slate-400 font-bold text-center mb-1">
+                    Sphären der Macht</p>
+                <div class="flex justify-center w-full">
+                    <div
+                        class="scroll-mask flex gap-4 overflow-x-auto no-scrollbar py-4 px-4 items-center snap-x max-w-full">
+
+                        <!-- Alle Button (Spezial CSS) -->
+                        <button onclick="setColorFilter('all')" id="btn-all"
+                            class="filter-btn filter-active shrink-0 w-14 h-14 flex items-center justify-center transition-all snap-center rounded-full border border-[#fbe58f] shadow-[0_5px_12px_rgba(0,0,0,0.8)] relative overflow-hidden"
+                            style="background: radial-gradient(circle at 30% 30%, #fdf0a6, #d4af37, #422006);">
+                            <span
+                                class="text-[10px] font-black text-[#422006] tracking-widest uppercase drop-shadow-sm relative z-10">Alle</span>
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none">
+                            </div>
+                        </button>
+
+                        <div class="w-[1px] h-8 bg-white/10 shrink-0 mx-1"></div> <!-- Trennlinie -->
+
+                        <!-- Mana Buttons mit <img> Tags -->
+                        <button onclick="setColorFilter('farblos')" id="btn-farblos"
+                            class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                            <img src="mana-farblos.jpg" onerror="handleImageError(this, 'mana-farblos.jpg')">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none z-10">
+                            </div>
+                        </button>
+                        <button onclick="setColorFilter('weiss')" id="btn-weiss"
+                            class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                            <img src="mana-weiss.jpg" onerror="handleImageError(this, 'mana-weiss.jpg')">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none z-10">
+                            </div>
+                        </button>
+                        <button onclick="setColorFilter('blau')" id="btn-blau"
+                            class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                            <img src="mana-blau.jpg" onerror="handleImageError(this, 'mana-blau.jpg')">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none z-10">
+                            </div>
+                        </button>
+                        <button onclick="setColorFilter('schwarz')" id="btn-schwarz"
+                            class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                            <img src="mana-schwarz.jpg" onerror="handleImageError(this, 'mana-schwarz.jpg')">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none z-10">
+                            </div>
+                        </button>
+                        <button onclick="setColorFilter('rot')" id="btn-rot"
+                            class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                            <img src="mana-rot.jpg" onerror="handleImageError(this, 'mana-rot.jpg')">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none z-10">
+                            </div>
+                        </button>
+                        <button onclick="setColorFilter('gruen')" id="btn-gruen"
+                            class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                            <!-- Fest kodiert auf gruen ohne Umlaut für Server-Stabilität -->
+                            <img src="mana-gruen.jpg" onerror="handleImageError(this, 'mana-gruen.jpg')">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none z-10">
+                            </div>
+                        </button>
+                        <button onclick="setColorFilter('lila')" id="btn-lila"
+                            class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                            <img src="mana-lila.jpg" onerror="handleImageError(this, 'mana-lila.jpg')">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none z-10">
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                <!-- Subtiler Fade an den Rändern für die Scrollbar -->
+                <div
+                    class="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-[#050a14]/80 to-transparent pointer-events-none">
+                </div>
+                <div
+                    class="absolute top-0 left-0 w-8 h-full bg-gradient-to-r from-[#050a14]/80 to-transparent pointer-events-none">
+                </div>
+            </div>
+
+            <!-- Custom Premium Dropdowns (Mit Riot Icons) -->
+            <div class="grid grid-cols-2 gap-4 px-2">
+                <!-- Region Dropdown -->
+                <div class="relative w-full" onclick="event.stopPropagation()">
+                    <div class="w-full bg-black/50 border border-white/10 rounded-xl py-3 px-4 text-[10px] font-bold text-[var(--gold)] font-magic tracking-widest uppercase flex items-center justify-between cursor-pointer shadow-inner hover:bg-black/80 hover:border-[var(--gold)]/50 transition-all"
+                        onclick="toggleDropdown('regionList')">
+                        <div class="flex items-center gap-2" id="regionSelected">
+                            <img src="https://dd.b.pvp.net/latest/core/en_us/img/regions/icon-runeterra.png"
+                                class="w-5 h-5 opacity-90" alt="Icon" onerror="this.style.display='none'">
+                            <span>Alle Regionen</span>
+                        </div>
+                        <span class="opacity-50 text-[8px]">▼</span>
+                    </div>
+                    <div id="regionList"
+                        class="absolute z-50 w-full mt-2 bg-[#0a0a0f]/95 backdrop-blur-xl border border-[var(--gold)]/30 rounded-xl hidden shadow-[0_15px_40px_rgba(0,0,0,0.9)] max-h-64 overflow-y-auto custom-dropdown-list">
+                        <ul class="py-2 flex flex-col font-magic text-[10px] tracking-widest text-slate-300 uppercase">
+                            <!-- Generiert von JS -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Sortierung Dropdown -->
+                <div class="relative w-full" onclick="event.stopPropagation()">
+                    <div class="w-full bg-black/50 border border-white/10 rounded-xl py-3 px-4 text-[10px] font-bold text-[var(--gold)] font-magic tracking-widest uppercase flex items-center justify-between cursor-pointer shadow-inner hover:bg-black/80 hover:border-[var(--gold)]/50 transition-all"
+                        onclick="toggleDropdown('sortList')">
+                        <div class="flex items-center gap-2" id="sortSelected">
+                            <span>A - Z</span>
+                        </div>
+                        <span class="opacity-50 text-[8px]">▼</span>
+                    </div>
+                    <div id="sortList"
+                        class="absolute z-50 w-full mt-2 bg-[#0a0a0f]/95 backdrop-blur-xl border border-[var(--gold)]/30 rounded-xl hidden shadow-[0_15px_40px_rgba(0,0,0,0.9)] custom-dropdown-list">
+                        <ul class="py-2 flex flex-col font-magic text-[10px] tracking-widest text-slate-300 uppercase">
+                            <li class="px-4 py-3 hover:bg-[var(--gold)]/20 hover:text-[var(--gold-light)] cursor-pointer transition-colors"
+                                onclick="setSort('name', 'A - Z')">A - Z</li>
+                            <li class="px-4 py-3 hover:bg-[var(--gold)]/20 hover:text-[var(--gold-light)] cursor-pointer transition-colors"
+                                onclick="setSort('costAsc', 'Mana: Gering')">Mana: Gering</li>
+                            <li class="px-4 py-3 hover:bg-[var(--gold)]/20 hover:text-[var(--gold-light)] cursor-pointer transition-colors"
+                                onclick="setSort('costDesc', 'Mana: Hoch')">Mana: Hoch</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <main class="grid grid-cols-2 gap-5" id="cardGrid"></main>
+
+        <div id="noResults"
+            class="hidden text-center py-20 px-8 bg-black/40 rounded-3xl border border-white/5 backdrop-blur-sm">
+            <p class="font-lore text-[#d4af37] text-2xl italic tracking-wide opacity-80">"Die Archive schweigen zu
+                dieser Suche..."</p>
+        </div>
+    </div>
+
+    <!-- Modal (Vollansicht der Karte) -->
+    <div id="modal" class="fixed inset-0 z-[100] hidden overflow-y-auto" onclick="closeModal()">
+
+        <!-- Schließen Button Oben Rechts -->
+        <div class="sticky top-6 right-6 flex justify-end z-50 pointer-events-none">
+            <button onclick="closeModal()"
+                class="pointer-events-auto bg-black/70 border border-[var(--gold)]/50 rounded-full w-12 h-12 flex items-center justify-center text-[var(--gold)] backdrop-blur-xl shadow-[0_0_25px_rgba(0,0,0,0.9)] active:scale-90 transition-all hover:bg-[#dfb750]/20 hover:text-white hover:border-[var(--gold-light)]">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="modalInner" class="max-w-lg mx-auto pb-24 pt-4" onclick="event.stopPropagation()">
+
+            <!-- Volle Karte oben (100% sichtbar) -->
+            <div class="w-full px-6 mb-12 flex justify-center drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)] relative">
+                <div class="absolute inset-0 bg-[var(--gold)]/10 blur-[100px] rounded-full pointer-events-none"></div>
+                <img id="modalImg" src=""
+                    class="max-w-full max-h-[55vh] object-contain relative z-10 rounded-[1.5rem] border border-white/10"
+                    alt="Karte">
+            </div>
+
+            <!-- Edler Info Bereich Unten -->
+            <div id="modalContent" class="px-5 space-y-6">
+                <!-- Wird per JS gefüllt -->
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Offizielle Regionen (Mit Riot Legends of Runeterra Icons)
+        const regions = [
+            { id: 'all', name: 'Alle Regionen', icon: 'icon-runeterra.png' },
+            { id: 'Bandle', name: 'Bandle', icon: 'icon-bandlecity.png' },
+            { id: 'Bilgewasser', name: 'Bilgewasser', icon: 'icon-bilgewater.png' },
+            { id: 'Demacia', name: 'Demacia', icon: 'icon-demacia.png' },
+            { id: 'Freljord', name: 'Freljord', icon: 'icon-freljord.png' },
+            { id: 'Ionia', name: 'Ionia', icon: 'icon-ionia.png' },
+            { id: 'Noxus', name: 'Noxus', icon: 'icon-noxus.png' },
+            { id: 'Piltover', name: 'Piltover & Zhaun', icon: 'icon-piltoverzaun.png' },
+            { id: 'Runeterra', name: 'Runeterra', icon: 'icon-runeterra.png' },
+            { id: 'Schatteninseln', name: 'Schatteninseln', icon: 'icon-shadowisles.png' },
+            { id: 'Shurima', name: 'Shurima', icon: 'icon-shurima.png' },
+            { id: 'Targon', name: 'Targon', icon: 'icon-targon.png' }
+        ];
+
+        let activeColor = 'all';
+        let activeRegion = 'all';
+        let activeSort = 'name';
+
+        // Datenbank
+        const cards = [
+            {
+                id: 'zeremonie',
+                name: 'Kritische Zeremonie',
+                type: 'Artefakt – Schauplatz',
+                color: 'lila',
+                region: 'Ionia',
+                cost: 4,
+                costArr: [
+                    { color: 'farblos', amount: 4 }
+                ],
+                stats: '—',
+                keywords: [
+                    { name: 'Kritischer Treffer-Marke', desc: 'Zu Beginn deiner Kampfphase wirfst du einen 1W6-Würfel. Ist die gewürfelte Zahl gerade, erhält der Champion +2/+0 bis zum Ende des Zuges.' }
+                ],
+                quote: '„Sie nennen es Tragödie. Ich nenne es den vierten Akt.“',
+                image: 'Kritische Zeremonie.jpg'
+            },
+            {
+                id: 'akali',
+                name: 'Akali, der Schattenanschlag',
+                type: 'Champion – Ninja, Assasine',
+                color: 'schwarz',
+                region: 'Ionia',
+                cost: 4,
+                costArr: [
+                    { color: 'farblos', amount: 3 },
+                    { color: 'schwarz', amount: 1 }
+                ],
+                stats: '2/2',
+                keywords: [
+                    { name: 'Eile', desc: 'Dieser Champion kann im selben Zug angreifen, in dem er beschworen wurde.' },
+                    { name: 'Aufblitzen', desc: 'Du kannst diese Karte jederzeit wirken, als wäre sie ein Spontanzauber.' }
+                ],
+                quote: '„Der Schnitt war etwas tief, meinst du nicht?“',
+                image: 'Akali, der Schattenanschlag.jpg'
+            },
+            {
+                id: 'alistar',
+                name: 'Alistar, der goldene Minotaurus',
+                type: 'Champion – Minotaurus, Tank',
+                color: 'weiss',
+                region: 'Runeterra',
+                cost: 3,
+                costArr: [
+                    { color: 'farblos', amount: 2 },
+                    { color: 'weiss', amount: 1 }
+                ],
+                stats: '1/4',
+                keywords: [
+                    { name: 'Abwehr X', desc: 'Verhindere die nächsten X Schadenspunkte, die diesem Champion in diesem Zug zugefügt würden.' }
+                ],
+                quote: '„Du kannst den Bullen nicht aufhalten!“',
+                image: 'Alistar, der goldene Minotaurus.jpg'
+            },
+            {
+                id: 'garen',
+                name: 'Pingu Garen',
+                type: 'Champion – Pinguin, Krieger',
+                color: 'weiss',
+                region: 'Demacia',
+                cost: 5,
+                costArr: [
+                    { color: 'farblos', amount: 4 },
+                    { color: 'weiss', amount: 1 }
+                ],
+                stats: '5/2',
+                keywords: [
+                    { name: 'Eile', desc: 'Dieser Champion kann im selben Zug angreifen, in dem er beschworen wurde.' },
+                    { name: 'Mut', desc: 'Wenn "Pingu Garen" ins Spiel kommt, erhalten alle Champions die du kontrollierst, +1/+1 bis zum Ende des Zuges.' }
+                ],
+                quote: '„Stahl rostet, Eis schmilzt, doch mein Mut ist undurchdringlich.“',
+                image: 'Pingu Garen.jpg'
+            },
+            {
+                id: 'ashe',
+                name: 'Ashe, Rose des Nordens',
+                type: 'Champion – Mensch, Königin',
+                color: 'farblos',
+                region: 'Freljord',
+                cost: 4,
+                costArr: [
+                    { color: 'farblos', amount: 4 }
+                ],
+                stats: '3/4',
+                keywords: [
+                    { name: 'Frostschlag', desc: 'Immer wenn dieser Champion einem anderem Champion Kampfschaden zufügt, tappe jenen Champion bis zum Ende des Zuges.' }
+                ],
+                quote: '„Ein Tee wärmt das Herz, doch mein Pfeil kühlt den Übermut.“',
+                image: 'Ashe, Rose des Nordens.jpg'
+            },
+            {
+                id: 'ahri',
+                name: 'Ahri, Blumen des Geisterpfads',
+                type: 'Champion – Fuchsgeist, Vastaya',
+                color: 'blau',
+                region: 'Ionia',
+                cost: 3,
+                costArr: [
+                    { color: 'farblos', amount: 2 },
+                    { color: 'blau', amount: 1 }
+                ],
+                stats: '3/2',
+                keywords: [
+                    { name: 'Lebensraub (Passiv)', desc: 'Immer wenn dieser Champion Schaden zufügt, erhältst du +1 ❤️' },
+                    { name: 'Bezaubern (Aktiv ⟳)', desc: 'Ein Champion deiner Wahl kann bis zum Ende seines Zuges nicht angreifen.' }
+                ],
+                quote: '„Lass dich nicht von meinen freundlichen Worten täuschen.“',
+                image: 'Ahri, Blumen des Geisterpfads.jpg'
+            }
+        ];
+
+        // Setup Region Dropdown
+        function setupRegionDropdown() {
+            const list = document.querySelector('#regionList ul');
+            if (!list) return;
+            list.innerHTML = regions.map(r => `
+                <li class="px-4 py-3 flex items-center gap-3 hover:bg-[var(--gold)]/20 hover:text-white cursor-pointer transition-colors" 
+                    onclick="setRegion('${r.id}', '${r.name}', '${r.icon}')">
+                    <img src="https://dd.b.pvp.net/latest/core/en_us/img/regions/${r.icon}" class="w-5 h-5 opacity-90" onerror="this.style.display='none'">
+                    <span>${r.name}</span>
+                </li>
+            `).join('');
+        }
+
+        function toggleDropdown(id) {
+            closeAllDropdowns();
+            const element = document.getElementById(id);
+            if (element) element.classList.remove('hidden');
+        }
+
+        function closeAllDropdowns() {
+            const regionList = document.getElementById('regionList');
+            const sortList = document.getElementById('sortList');
+            if (regionList) regionList.classList.add('hidden');
+            if (sortList) sortList.classList.add('hidden');
+        }
+
+        function setRegion(id, name, icon) {
+            activeRegion = id;
+            const regionSelected = document.getElementById('regionSelected');
+            if (regionSelected) {
+                regionSelected.innerHTML = `
+                    <img src="https://dd.b.pvp.net/latest/core/en_us/img/regions/${icon}" class="w-5 h-5 opacity-90" onerror="this.style.display='none'">
+                    <span>${name}</span>
+                `;
+            }
+            closeAllDropdowns();
+            applyFilters();
+        }
+
+        function setSort(id, name) {
+            activeSort = id;
+            const sortSelected = document.getElementById('sortSelected');
+            if (sortSelected) {
+                sortSelected.innerHTML = `<span>${name}</span>`;
+            }
+            closeAllDropdowns();
+            applyFilters();
+        }
+
+        function handleImageError(img, path) {
+            if (!img.dataset.retried) {
+                img.dataset.retried = "1";
+                const formats = ['.png', '.jpg', '.jpeg'];
+                const lastDot = path.lastIndexOf('.');
+                const base = lastDot !== -1 ? path.substring(0, lastDot) : path;
+                let currentIdx = 0;
+
+                const tryNext = () => {
+                    if (currentIdx < formats.length) {
+                        img.src = base + formats[currentIdx++];
+                    } else {
+                        img.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111%22/%3E%3C/svg%3E';
+                    }
+                };
+                img.onerror = tryNext;
+                tryNext();
+            }
+        }
+
+        function setColorFilter(color) {
+            activeColor = color;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('filter-active'));
+            const selectedBtn = document.getElementById('btn-' + color);
+            if (selectedBtn) selectedBtn.classList.add('filter-active');
+
+            setTimeout(applyFilters, 50);
+        }
+
+        function applyFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const search = searchInput && searchInput.value ? searchInput.value.toLowerCase() : '';
+
+            let result = cards.filter(c => {
+                const matchSearch = c.name.toLowerCase().includes(search) || c.type.toLowerCase().includes(search);
+                const matchColor = activeColor === 'all' || c.color === activeColor;
+                const matchRegion = activeRegion === 'all' || c.region === activeRegion;
+                return matchSearch && matchColor && matchRegion;
+            });
+
+            result.sort((a, b) => {
+                if (activeSort === 'name') return a.name.localeCompare(b.name);
+                if (activeSort === 'costAsc') return a.cost - b.cost;
+                if (activeSort === 'costDesc') return b.cost - a.cost;
+                return 0;
+            });
+
+            renderGrid(result);
+        }
+
+        function initParallax() {
+            document.querySelectorAll('.card-container').forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    card.classList.remove('reset-transition');
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -12;
+                    const rotateY = ((x - centerX) / centerX) * 12;
+
+                    card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.classList.add('reset-transition');
+                    card.style.transform = `perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                });
+            });
+        }
+
+        function renderGrid(filteredCards) {
+            const grid = document.getElementById('cardGrid');
+            const noResults = document.getElementById('noResults');
+            if (!grid || !noResults) return;
+
+            grid.innerHTML = '';
+
+            if (filteredCards.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                grid.innerHTML = filteredCards.map((c, index) => {
+                    return `
+                    <div onclick="openModal('${c.id}')" class="card-entry card-container relative rounded-[1rem] overflow-hidden cursor-pointer shadow-2xl" style="animation-delay: ${index * 0.06}s">
+                        <div class="relative aspect-[3/4]">
+                            <img src="${c.image}" class="w-full h-full object-cover opacity-90 hover:opacity-100 hover:scale-105 transition-all duration-500" alt="${c.name}" onerror="handleImageError(this, '${c.image}')">
+                            
+                            <!-- Subtile Vignette für Tiefe (ohne überlagernden Text) -->
+                            <div class="absolute inset-0 pointer-events-none shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]"></div>
+                        </div>
+                    </div>
+                `}).join('');
+
+                setTimeout(() => {
+                    initParallax();
+                }, 50);
+            }
+        }
+
+        function openModal(id) {
+            const card = cards.find(c => c.id === id);
+            if (!card) return;
+
+            const imgEl = document.getElementById('modalImg');
+            if (imgEl) {
+                delete imgEl.dataset.retried; // Sichert das Neuladen des Vollbilds
+                imgEl.src = card.image;
+                imgEl.onerror = () => handleImageError(imgEl, card.image);
+            }
+
+            let keywordsHtml = '';
+            if (card.keywords && card.keywords.length > 0) {
+                keywordsHtml = `
+                    <div class="bg-gradient-to-br from-black/80 to-[#0a0a0f]/90 border border-white/5 border-l-2 border-l-[var(--gold)] p-6 rounded-[1.5rem] mt-6 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
+                        <h3 class="font-magic text-[var(--gold)] text-[10px] uppercase tracking-[0.3em] mb-4 border-b border-white/10 pb-3 flex items-center gap-2">
+                            <span class="text-xs">✧</span> Codex Glossar
+                        </h3>
+                        <div class="space-y-5">
+                            ${card.keywords.map(kw => `
+                                <div>
+                                    <span class="font-bold text-white text-sm tracking-widest uppercase opacity-90">${kw.name}</span>
+                                    <p class="text-slate-400 text-sm mt-2 leading-relaxed font-light">${kw.desc}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const modalContent = document.getElementById('modalContent');
+            if (modalContent) {
+                modalContent.innerHTML = `
+                    <div class="text-center mb-8 px-4">
+                        <div class="inline-flex items-center justify-center gap-3 mb-3 px-5 py-1.5 rounded-full border border-[var(--gold)]/20 bg-black/60 backdrop-blur-md shadow-[0_0_15px_rgba(223,183,80,0.15)]">
+                            <span class="font-magic text-[var(--gold)] text-[10px] tracking-[0.2em] uppercase">${card.region}</span>
+                            <div class="w-1.5 h-1.5 rounded-full bg-[var(--gold)]/60"></div>
+                            <span class="font-magic text-[var(--gold)] text-[10px] tracking-[0.2em] uppercase">${card.type}</span>
+                        </div>
+                        <h2 class="font-magic text-3xl font-bold text-white drop-shadow-[0_2px_15px_rgba(223,183,80,0.3)] mt-2">${card.name}</h2>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <div class="flex-1 stat-box p-5 rounded-[1.5rem] text-center">
+                            <p class="font-magic text-slate-400 text-[9px] uppercase tracking-[0.2em] mb-4">Manakosten</p>
+                            <div class="flex items-center justify-center gap-2 flex-wrap">
+                                ${card.costArr.map(mana => `
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-bold text-white text-xl drop-shadow-md">${mana.amount > 1 || mana.color === 'farblos' ? mana.amount : ''}</span>
+                                        <div class="w-7 h-7 rounded-full mana-gem shrink-0 border border-white/20">
+                                            <img src="mana-${mana.color}.jpg" class="w-full h-full object-cover" onerror="handleImageError(this, 'mana-${mana.color}.jpg')">
+                                        </div>
+                                    </div>
+                                `).join('<span class="text-[var(--gold)]/50 text-lg font-light mx-1">+</span>')}
+                            </div>
+                        </div>
+                        <div class="flex-1 stat-box p-5 rounded-[1.5rem] text-center flex flex-col justify-center">
+                            <p class="font-magic text-slate-400 text-[9px] uppercase tracking-[0.2em] mb-2">Kampfwerte</p>
+                            <p class="font-bold text-[var(--gold-light)] text-4xl font-magic drop-shadow-md">${card.stats}</p>
+                        </div>
+                    </div>
+                    
+                    ${keywordsHtml}
+
+                    ${card.quote ? `
+                        <div class="mt-12 mb-8 text-center px-8 relative">
+                            <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-[var(--gold)]/50 to-transparent mx-auto mb-8"></div>
+                            <p class="font-lore text-2xl italic text-slate-300 opacity-90 leading-relaxed drop-shadow-md">
+                                ${card.quote}
+                            </p>
+                            <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-[var(--gold)]/50 to-transparent mx-auto mt-8"></div>
+                        </div>
+                    ` : ''}
+                `;
+            }
+
+            const modal = document.getElementById('modal');
+            const inner = document.getElementById('modalInner');
+            if (modal && inner) {
+                modal.classList.remove('hidden');
+                modal.style.animation = 'modalFadeIn 0.3s ease-out forwards';
+                inner.style.animation = 'cardEnter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const inner = document.getElementById('modalInner');
+            if (modal) {
+                modal.style.animation = 'modalFadeOut 0.3s ease-in forwards';
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.style.animation = '';
+                    if (inner) inner.style.animation = '';
+                    document.body.style.overflow = '';
+                }, 280);
+            }
+        }
+
+        window.onload = () => {
+            setupRegionDropdown();
+            applyFilters();
+        };
+    </script>
+</body>
+
+</html>

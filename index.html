@@ -44,6 +44,10 @@
             --gold-dark: #8c7322;
         }
 
+        html {
+            overscroll-behavior: none; /* Blockiert Pull-to-Refresh auf allerhöchster Ebene */
+        }
+
         body { 
             background: linear-gradient(135deg, #050a14 0%, #2a050d 100%);
             color: #e2e8f0; 
@@ -52,8 +56,8 @@
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
             min-height: 100vh;
-            /* Pull-to-refresh im Hauptmenü ist standardmäßig erlaubt */
-            overscroll-behavior-y: auto; 
+            /* Pull-to-refresh komplett und permanent deaktiviert für die gesamte App */
+            overscroll-behavior: none; 
         }
 
         .font-magic { font-family: 'Cinzel', serif; }
@@ -344,7 +348,7 @@
                 image: 'Kritische Zeremonie.jpg' 
             },
             { 
-                id: 'akali', name: 'Akali, der Schattenanschlag', type: 'Champion – Ninja, Assasine', 
+                id: 'akali', name: 'Akali, der Schattenanschlag', type: 'Champion – Ninja, Assassine', 
                 color: 'schwarz', region: 'Ionia', cost: 4, 
                 costArr: [{ color: 'farblos', amount: 3 }, { color: 'schwarz', amount: 1 }],
                 stats: '2/2',
@@ -381,7 +385,7 @@
                 color: 'farblos', region: 'Freljord', cost: 4, 
                 costArr: [{ color: 'farblos', amount: 4 }],
                 stats: '3/4',
-                keywords: [{ name: 'Frostschlag', desc: 'Immer wenn dieser Champion einem anderem Champion Kampfschaden zufügt, tappe jenen Champion bis zum Ende des nächsten Zuges.' }],
+                keywords: [{ name: 'Frostschlag', desc: 'Immer wenn dieser Champion einem anderen Champion Kampfschaden zufügt, tappe jenen Champion bis zum Ende des nächsten Zuges.' }],
                 quote: '„Ein Tee wärmt das Herz, doch mein Pfeil kühlt den Übermut.“',
                 image: 'Ashe, Rose des Nordens.jpg' 
             },
@@ -525,9 +529,6 @@
         function openModal(id) {
             const card = cards.find(c => c.id === id);
             if (!card) return;
-            
-            // Deaktiviere Pull-to-Refresh und Edge-Swipe Navigation komplett, solange das Fenster offen ist
-            document.body.style.overscrollBehavior = 'none';
 
             const imgEl = document.getElementById('modalImg');
             if (imgEl) {
@@ -572,8 +573,8 @@
                             <p class="font-magic text-slate-400 text-[9px] uppercase tracking-[0.2em] mb-4">Manakosten</p>
                             <div class="flex items-center justify-center gap-2 flex-wrap">
                                 ${card.costArr.map(mana => `
-                                    <div class="flex items-center gap-1">
-                                        <span class="font-bold text-white text-xl drop-shadow-md min-w-[12px]">${mana.amount > 1 || mana.color === 'farblos' ? mana.amount : ''}</span>
+                                    <div class="flex items-center gap-1.5">
+                                        ${(mana.amount > 1 || mana.color === 'farblos') ? `<span class="font-bold text-white text-xl drop-shadow-md">${mana.amount}</span>` : ''}
                                         <div class="w-7 h-7 rounded-full mana-gem shrink-0 border border-white/20">
                                             <img src="mana-${mana.color}.jpg" class="w-full h-full object-cover" onerror="window.handleImageError(this, 'mana-${mana.color}.jpg')">
                                         </div>
@@ -724,8 +725,6 @@
                         inner.style.transition = '';
                     }
 
-                    // Pull-to-refresh und Navigation im Hauptmenü wieder erlauben
-                    document.body.style.overscrollBehavior = 'auto';
                     document.body.style.overflow = '';
                 }, swipedOut ? 100 : 280);
             }

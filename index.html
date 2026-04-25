@@ -49,11 +49,11 @@
             color: #e2e8f0; 
             margin: 0; 
             font-family: 'Inter', sans-serif; 
-            /* Verhindert Pull-to-refresh und Scrollen beim Wischen */
-            overscroll-behavior-y: none;
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
             min-height: 100vh;
+            /* Pull-to-refresh im Hauptmenü ist ERLAUBT */
+            overscroll-behavior-y: auto; 
         }
 
         .font-magic { font-family: 'Cinzel', serif; }
@@ -87,6 +87,7 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid rgba(255,255,255,0.1);
             overflow: hidden;
+            background-color: #0f172a;
         }
         
         .mana-gem img {
@@ -128,11 +129,12 @@
         }
 
         .card-swipe-anim {
-            animation: swipeEnter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation: swipeEnter 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            transform-origin: bottom center;
         }
         @keyframes swipeEnter {
-            from { opacity: 0; transform: scale(0.95) translateX(-20px); filter: blur(5px); }
-            to { opacity: 1; transform: scale(1) translateX(0); filter: blur(0); }
+            from { opacity: 0; transform: scale(0.95) translateY(20px); filter: blur(5px); }
+            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
         }
 
         .card-container {
@@ -221,25 +223,25 @@
                         
                         <div class="w-[1px] h-8 bg-white/10 shrink-0 mx-1"></div>
                         
-                        <button onclick="setColorFilter('farblos')" id="btn-farblos" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                        <button onclick="setColorFilter('farblos')" id="btn-farblos" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem border-white/20">
                             <img src="mana-farblos.jpg" onerror="window.handleImageError(this, 'mana-farblos.jpg')">
                         </button>
-                        <button onclick="setColorFilter('weiss')" id="btn-weiss" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                        <button onclick="setColorFilter('weiss')" id="btn-weiss" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem border-white/20">
                             <img src="mana-weiss.jpg" onerror="window.handleImageError(this, 'mana-weiss.jpg')">
                         </button>
-                        <button onclick="setColorFilter('blau')" id="btn-blau" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                        <button onclick="setColorFilter('blau')" id="btn-blau" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem border-white/20">
                             <img src="mana-blau.jpg" onerror="window.handleImageError(this, 'mana-blau.jpg')">
                         </button>
-                        <button onclick="setColorFilter('schwarz')" id="btn-schwarz" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                        <button onclick="setColorFilter('schwarz')" id="btn-schwarz" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem border-white/20">
                             <img src="mana-schwarz.jpg" onerror="window.handleImageError(this, 'mana-schwarz.jpg')">
                         </button>
-                        <button onclick="setColorFilter('rot')" id="btn-rot" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                        <button onclick="setColorFilter('rot')" id="btn-rot" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem border-white/20">
                             <img src="mana-rot.jpg" onerror="window.handleImageError(this, 'mana-rot.jpg')">
                         </button>
-                        <button onclick="setColorFilter('gruen')" id="btn-gruen" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                        <button onclick="setColorFilter('gruen')" id="btn-gruen" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem border-white/20">
                             <img src="mana-gruen.jpg" onerror="window.handleImageError(this, 'mana-gruen.jpg')">
                         </button>
-                        <button onclick="setColorFilter('lila')" id="btn-lila" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem bg-slate-900 border-white/20">
+                        <button onclick="setColorFilter('lila')" id="btn-lila" class="filter-btn shrink-0 w-12 h-12 transition-all flex items-center justify-center snap-center mana-gem border-white/20">
                             <img src="mana-lila.jpg" onerror="window.handleImageError(this, 'mana-lila.jpg')">
                         </button>
                     </div>
@@ -301,11 +303,10 @@
         <!-- Der Container, der gewischt und animiert werden kann -->
         <div id="modalInner" class="max-w-lg mx-auto pb-24 pt-4" onclick="event.stopPropagation()">
             
-            <!-- Volle Karte oben (Mit Pinch-To-Zoom Funktion und touch-none) -->
+            <!-- Volle Karte oben (Zoom entfernt, sauberes Image) -->
             <div class="w-full px-6 mb-12 flex justify-center drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)] relative">
                 <div class="absolute inset-0 bg-[var(--gold)]/10 blur-[100px] rounded-full pointer-events-none"></div>
-                <!-- touch-none und select-none verhindert native Browsergesten (Pull-To-Refresh & Markieren) beim Zoomen -->
-                <img id="modalImg" src="" class="max-w-full max-h-[55vh] object-contain relative z-10 rounded-[1.5rem] border border-white/10 touch-none select-none" alt="Karte">
+                <img id="modalImg" src="" class="max-w-full max-h-[55vh] object-contain relative z-10 rounded-[1.5rem] border border-white/10 pointer-events-none" alt="Karte">
             </div>
             
             <div id="modalContent" class="px-5 space-y-6"></div>
@@ -332,13 +333,14 @@
         let activeRegion = 'all';
         let activeSort = 'name';
 
+        // Verbesserte Manakosten und optimierte Textstruktur
         const cards = [
             { 
                 id: 'zeremonie', name: 'Kritische Zeremonie', type: 'Artefakt – Schauplatz', 
                 color: 'lila', region: 'Ionia', cost: 4, 
                 costArr: [{ color: 'farblos', amount: 4 }],
                 stats: '—',
-                keywords: [{ name: 'Kritischer Treffer-Marke', desc: 'Zu Beginn deiner Kampfphase wirfst du einen 1W6-Würfel. Ist die gewürfelte Zahl gerade, erhält der Champion +2/+0 bis zum Ende des Zuges.' }],
+                keywords: [{ name: 'Kritischer Treffer-Marke', desc: 'Zu Beginn deiner Kampfphase wirfst du einen 1W6-Würfel. <br><br><span class="text-white opacity-100 font-medium">Ergebnis Gerade:</span> Ein verbündeter Champion erhält +2/+0 bis zum Ende des Zuges.' }],
                 quote: '„Sie nennen es Tragödie. Ich nenne es den vierten Akt.“',
                 image: 'Kritische Zeremonie.jpg' 
             },
@@ -370,7 +372,7 @@
                 stats: '5/2',
                 keywords: [
                     { name: 'Eile', desc: 'Dieser Champion kann im selben Zug angreifen, in dem er beschworen wurde.' },
-                    { name: 'Mut', desc: 'Wenn "Pingu Garen" ins Spiel kommt, erhalten alle Champions die du kontrollierst, +1/+1 bis zum Ende des Zuges.' }
+                    { name: 'Mut', desc: 'Wenn <span class="text-amber-400">Pingu Garen</span> ins Spiel kommt, erhalten alle verbündeten Champions +1/+1 bis zum Ende des Zuges.' }
                 ],
                 quote: '„Stahl rostet, Eis schmilzt, doch mein Mut ist undurchdringlich.“',
                 image: 'Pingu Garen.jpg' 
@@ -380,7 +382,7 @@
                 color: 'farblos', region: 'Freljord', cost: 4, 
                 costArr: [{ color: 'farblos', amount: 4 }],
                 stats: '3/4',
-                keywords: [{ name: 'Frostschlag', desc: 'Immer wenn dieser Champion einem anderem Champion Kampfschaden zufügt, tappe jenen Champion bis zum Ende des Zuges.' }],
+                keywords: [{ name: 'Frostschlag', desc: 'Immer wenn dieser Champion einem anderem Champion Kampfschaden zufügt, tappe jenen Champion bis zum Ende des nächsten Zuges.' }],
                 quote: '„Ein Tee wärmt das Herz, doch mein Pfeil kühlt den Übermut.“',
                 image: 'Ashe, Rose des Nordens.jpg' 
             },
@@ -390,8 +392,8 @@
                 costArr: [{ color: 'farblos', amount: 2 }, { color: 'blau', amount: 1 }],
                 stats: '3/2',
                 keywords: [
-                    { name: 'Lebensraub (Passiv)', desc: 'Immer wenn dieser Champion Schaden zufügt, erhältst du +1 ❤️' },
-                    { name: 'Bezaubern (Aktiv ⟳)', desc: 'Ein Champion deiner Wahl kann bis zum Ende seines Zuges nicht angreifen.' }
+                    { name: 'Lebensraub', desc: '<span class="text-[var(--gold)] text-xs border border-[var(--gold)]/30 px-2 py-0.5 rounded-full mr-1">Passiv</span> Immer wenn dieser Champion Schaden zufügt, erhältst du +1 ❤️' },
+                    { name: 'Bezaubern', desc: '<span class="text-blue-400 text-xs border border-blue-400/30 px-2 py-0.5 rounded-full mr-1">Aktiv ⟳</span> Ein Champion deiner Wahl kann bis zum Ende seines Zuges nicht angreifen.' }
                 ],
                 quote: '„Lass dich nicht von meinen freundlichen Worten täuschen.“',
                 image: 'Ahri, Blumen des Geisterpfads.jpg' 
@@ -525,18 +527,14 @@
             const card = cards.find(c => c.id === id);
             if (!card) return;
             
+            // Deaktiviere Pull-to-Refresh solange die Karte offen ist
+            document.body.style.overscrollBehaviorY = 'none';
+
             const imgEl = document.getElementById('modalImg');
             if (imgEl) {
                 delete imgEl.dataset.retried; 
                 imgEl.src = card.image;
                 imgEl.onerror = () => window.handleImageError(imgEl, card.image);
-                
-                // Reset Zoom and Position on open
-                currentScale = 1;
-                panX = 0;
-                panY = 0;
-                imgEl.style.transform = 'translate(0px, 0px) scale(1)';
-                imgEl.style.transition = '';
             }
 
             let keywordsHtml = '';
@@ -546,11 +544,11 @@
                         <h3 class="font-magic text-[var(--gold)] text-[10px] uppercase tracking-[0.3em] mb-4 border-b border-white/10 pb-3 flex items-center gap-2">
                             <span class="text-xs">✧</span> Codex Glossar
                         </h3>
-                        <div class="space-y-5">
+                        <div class="space-y-6">
                             ${card.keywords.map(kw => `
                                 <div>
-                                    <span class="font-bold text-white text-sm tracking-widest uppercase opacity-90">${kw.name}</span>
-                                    <p class="text-slate-400 text-sm mt-2 leading-relaxed font-light">${kw.desc}</p>
+                                    <span class="font-bold text-white text-sm tracking-widest uppercase opacity-90 block mb-1">${kw.name}</span>
+                                    <p class="text-slate-400 text-[13px] leading-relaxed font-light">${kw.desc}</p>
                                 </div>
                             `).join('')}
                         </div>
@@ -575,13 +573,13 @@
                             <p class="font-magic text-slate-400 text-[9px] uppercase tracking-[0.2em] mb-4">Manakosten</p>
                             <div class="flex items-center justify-center gap-2 flex-wrap">
                                 ${card.costArr.map(mana => `
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="font-bold text-white text-xl drop-shadow-md">${mana.amount > 1 || mana.color === 'farblos' ? mana.amount : ''}</span>
+                                    <div class="flex items-center gap-1">
+                                        <span class="font-bold text-white text-xl drop-shadow-md min-w-[12px]">${mana.amount > 1 || mana.color === 'farblos' ? mana.amount : ''}</span>
                                         <div class="w-7 h-7 rounded-full mana-gem shrink-0 border border-white/20">
                                             <img src="mana-${mana.color}.jpg" class="w-full h-full object-cover" onerror="window.handleImageError(this, 'mana-${mana.color}.jpg')">
                                         </div>
                                     </div>
-                                `).join('<span class="text-[var(--gold)]/50 text-lg font-light mx-1">+</span>')}
+                                `).join('<span class="text-[var(--gold)]/40 text-lg font-light mx-1">+</span>')}
                             </div>
                         </div>
                         <div class="flex-1 stat-box p-5 rounded-[1.5rem] text-center flex flex-col justify-center">
@@ -607,7 +605,6 @@
             const modal = document.getElementById('modal');
             const inner = document.getElementById('modalInner');
             if (modal && inner) {
-                // Setze Modal Status zurück
                 inner.style.transform = '';
                 inner.style.opacity = '';
                 inner.style.transition = '';
@@ -631,45 +628,42 @@
         const modalInner = document.getElementById('modalInner');
 
         modal.addEventListener('touchstart', e => {
-            // Nur erlauben, wenn das Bild nicht gezoomt ist und nur 1 Finger genutzt wird
-            if(e.touches.length === 1 && currentScale === 1) {
+            if(e.touches.length === 1) {
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
                 isSwiping = false;
                 isCheckingSwipe = true;
-                
-                // CSS Transitionen für direktes 1:1 Tracking deaktivieren
                 modalInner.style.transition = 'none'; 
             }
         }, {passive: true});
 
         modal.addEventListener('touchmove', e => {
             if(!isCheckingSwipe && !isSwiping) return;
-            if(currentScale > 1) return;
             
             let currentX = e.touches[0].clientX;
             let currentY = e.touches[0].clientY;
             let diffX = currentX - touchStartX;
             let diffY = currentY - touchStartY;
 
-            // Entscheiden, ob es ein horizontaler Swipe ist
             if (isCheckingSwipe) {
                 if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
                     isSwiping = true;
                     isCheckingSwipe = false;
                 } else if (Math.abs(diffY) > Math.abs(diffX)) {
-                    // Es ist ein vertikales Scrollen (Lesen der Karte), Swipe abbrechen
                     isCheckingSwipe = false;
                     isSwiping = false;
                 }
             }
 
             if (isSwiping) {
-                e.preventDefault(); // Verhindert natives horizontales Scrollen und Seiten-Navigation (Zurück-Geste) komplett
+                e.preventDefault(); 
                 
                 if (diffX > 0) {
                     currentTranslateX = diffX;
-                    modalInner.style.transform = `translateX(${diffX}px)`;
+                    // Die Karte dreht sich beim Wischen leicht zur Seite weg für ein realistischeres Gefühl!
+                    let rotateDeg = diffX * 0.05; 
+                    
+                    modalInner.style.transform = `translateX(${diffX}px) rotate(${rotateDeg}deg)`;
                     modalInner.style.opacity = Math.max(0, 1 - (diffX / (window.innerWidth * 0.8)));
                     modal.style.background = `rgba(0,0,0,${Math.max(0, 0.95 - (diffX / window.innerWidth))})`;
                 }
@@ -679,24 +673,17 @@
         modal.addEventListener('touchend', e => {
             if(isSwiping) {
                 isSwiping = false;
-                // Wieder flüssige CSS-Animationen einschalten
                 modalInner.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease-out';
                 modal.style.transition = 'background 0.3s ease-out';
                 
-                // Überprüfen, ob weit genug gezogen wurde
                 if(currentTranslateX > window.innerWidth * 0.35 || currentTranslateX > 120) {
-                    // Weiter aus dem Bildschirm sliden
-                    modalInner.style.transform = `translateX(100vw)`;
+                    modalInner.style.transform = `translateX(100vw) rotate(15deg)`;
                     modalInner.style.opacity = '0';
                     modal.style.background = 'transparent';
                     
-                    // Schließen nach der Animation
-                    setTimeout(() => {
-                        closeModal(true); // true = Überspringt die Standard Fade-Out Animation
-                    }, 300);
+                    setTimeout(() => { closeModal(true); }, 300);
                 } else {
-                    // Wie ein Gummiband zurückschnappen lassen
-                    modalInner.style.transform = `translateX(0px)`;
+                    modalInner.style.transform = `translateX(0px) rotate(0deg)`;
                     modalInner.style.opacity = '1';
                     modal.style.background = '';
                 }
@@ -712,7 +699,6 @@
                 if(!swipedOut) {
                     modal.style.animation = 'modalFadeOut 0.3s ease-in forwards';
                 } else {
-                    // Wenn wir schon gewischt haben, reicht ein extrem kurzes Fade-out für den Rest
                     modal.style.animation = 'modalFadeOut 0.1s ease-in forwards';
                 }
                 
@@ -728,129 +714,17 @@
                         inner.style.opacity = '';
                         inner.style.transition = '';
                     }
-                    
-                    // Zoom komplett zurücksetzen
-                    const img = document.getElementById('modalImg');
-                    if (img) {
-                        currentScale = 1;
-                        panX = 0;
-                        panY = 0;
-                        img.style.transform = 'translate(0px, 0px) scale(1)';
-                    }
 
+                    // Pull-to-refresh im Menü wieder erlauben
+                    document.body.style.overscrollBehaviorY = 'auto';
                     document.body.style.overflow = '';
                 }, swipedOut ? 100 : 280);
             }
         }
 
-        // --- PROFESSIONELLER PINCH-TO-ZOOM (Skalieren & Verschieben) ---
-        let currentScale = 1;
-        let initialPinchDistance = null;
-        let initialScale = 1;
-        let panX = 0, panY = 0;
-        let lastX = 0, lastY = 0;
-
-        function initPinchZoom() {
-            const img = document.getElementById('modalImg');
-            if (!img) return;
-
-            img.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 2) {
-                    e.preventDefault(); // Blockiert natives Zoomen & Pull-To-Refresh komplett
-                    initialPinchDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    initialScale = currentScale;
-                    img.style.transition = 'none';
-                } else if (e.touches.length === 1 && currentScale > 1) {
-                    // Tracking für das Verschieben des Bildes beginnen
-                    lastX = e.touches[0].clientX;
-                    lastY = e.touches[0].clientY;
-                    img.style.transition = 'none';
-                }
-            }, {passive: false});
-
-            img.addEventListener('touchmove', (e) => {
-                if (e.touches.length === 2 && initialPinchDistance) {
-                    e.preventDefault(); // Verhindert System-Gesten
-                    const currentDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    const zoom = currentDistance / initialPinchDistance;
-                    currentScale = Math.max(1, Math.min(initialScale * zoom, 4));
-                    
-                    // Reset vom Panning, wenn man komplett rauszoomt
-                    if (currentScale === 1) {
-                        panX = 0;
-                        panY = 0;
-                    }
-                    
-                    img.style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
-                } else if (e.touches.length === 1 && currentScale > 1) {
-                    e.preventDefault(); // Verhindert das Scrollen des Textes während man das Bild schiebt
-                    const currentX = e.touches[0].clientX;
-                    const currentY = e.touches[0].clientY;
-                    
-                    panX += (currentX - lastX);
-                    panY += (currentY - lastY);
-                    
-                    lastX = currentX;
-                    lastY = currentY;
-                    
-                    img.style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
-                }
-            }, {passive: false});
-
-            img.addEventListener('touchend', (e) => {
-                if (e.touches.length < 2) {
-                    initialPinchDistance = null;
-                }
-                
-                // Finger komplett losgelassen
-                if (e.touches.length === 0) {
-                    img.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)';
-                    
-                    // Sanftes Einrasten auf Originalgröße
-                    if(currentScale <= 1.05) {
-                        currentScale = 1;
-                        panX = 0;
-                        panY = 0;
-                        img.style.transform = `translate(0px, 0px) scale(1)`;
-                    }
-                }
-            });
-
-            // Doppeltippen zum Zurücksetzen oder schnellem Heranzoomen
-            let lastTap = 0;
-            img.addEventListener('touchend', (e) => {
-                const currentTime = new Date().getTime();
-                const tapLength = currentTime - lastTap;
-                
-                if (tapLength < 300 && tapLength > 0 && e.changedTouches.length === 1) {
-                    e.preventDefault(); // Verhindert natives Doppel-Tipp-Zoomen des Handys
-                    if (currentScale > 1) {
-                        currentScale = 1;
-                        panX = 0;
-                        panY = 0;
-                    } else {
-                        currentScale = 2.5; // Zoom-Stufe beim Doppeltippen
-                        panX = 0;
-                        panY = 0;
-                    }
-                    img.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
-                    img.style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
-                }
-                lastTap = currentTime;
-            }, {passive: false});
-        }
-        // --- ENDE: Pinch-to-Zoom ---
-
         window.onload = () => {
             setupRegionDropdown();
             applyFilters();
-            initPinchZoom(); 
 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js').catch(err => console.log("Service Worker Registration fehlgeschlagen:", err));
